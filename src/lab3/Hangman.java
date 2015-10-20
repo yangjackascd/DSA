@@ -1,29 +1,29 @@
 package lab3;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class HangMan {
-
+public class Hangman {
+    
     private static WordList load(String fileName) {
-        File file = new File(fileName);
         WordList wordList = null;
         try {
+            File file = new File(fileName);
             Scanner scanner = new Scanner(file);
-            System.out.println(scanner);
             int size = Integer.parseInt(scanner.nextLine());
             wordList = new WordList(size);
-            while (scanner.hasNextLine()) {
+            while(scanner.hasNextLine()) {
                 wordList.add(scanner.nextLine());
             }
-           
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(HangMan.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Hangman.class.getName()).log(Level.SEVERE, null, ex);
         }
         return wordList;
     }
-
+    
     private static boolean play(String word) {
         int round = 5;
         boolean isWin = true;
@@ -32,10 +32,10 @@ public class HangMan {
         char c;
         System.out.println();
         for (int i = 0; i < word.length(); i++) {
-            System.out.println("_ ");
+            System.out.print("_ ");
         }
         System.out.println();
-
+        
         char[] appear = new char[word.length()];
         for (int i = 0; i < appear.length; i++) {
             appear[i] = '_';
@@ -44,7 +44,7 @@ public class HangMan {
         while (filled < word.length() && round > 0) {
             prev = filled;
             HangmanDraw.draw(round);
-            System.out.println("You have " + round + " guesses left. Enter your next letter");
+            System.out.println("You have " + round + " guesses left. Your next letter:");
             c = scanner.next().charAt(0);
             for (int i = 0; i < word.length(); i++) {
                 if (word.charAt(i) == c) {
@@ -60,34 +60,32 @@ public class HangMan {
             }
             System.out.println();
         }
-
+        
         if (round == 0) {
             isWin = false;
             HangmanDraw.draw(round);
         }
-
         return isWin;
     }
-
+    
     public static void main(String[] args) {
         WordList wordList = load("words.txt");
         System.out.println("Welcome to Hangman!");
-
+        
         String userInput;
         boolean isPlaying = true;
         Scanner scanner = new Scanner(System.in);
-
-        while (!wordList.isEmpty() && isPlaying) {
-            System.out.println("Guess the following word");
+        while(!wordList.isEmpty() && isPlaying) {
+            System.out.println("Guess the following word:");
             String word = wordList.selectAny();
+            System.out.println(word);
             boolean isWin = play(word);
             if (isWin) {
                 wordList.remove(word);
                 if (wordList.isEmpty()) {
                     System.out.println("You have mastered Hangman!");
                 } else {
-                    System.out.println("Well done!");
-                    System.out.println("Do you want to play again? Y/N");
+                    System.out.println("Well done! Do you want to play again (Y/N)?");
                     userInput = scanner.next();
                     if (userInput.charAt(0) != 'Y' && userInput.charAt(0) != 'y') {
                         System.out.println("Goodbye!");

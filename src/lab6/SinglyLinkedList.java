@@ -1,44 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lab6;
 
 /**
  *
- * @author JakeYang
+ * @author mmahmoud
  * @param <E>
  */
-public class SinglyLinkedList< E extends Comparable<? super E>> extends AbstractList<E> {
-
+public class SinglyLinkedList<E extends Comparable<? super E>> extends AbstractList<E> {
+    
     private Node<E> head;
-
+    
     public SinglyLinkedList() {
         head = null;
         count = 0;
     }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public int indexOf(E value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Node<E> finger = head;
+        int index = 0;
+        while (finger != null && finger.value().compareTo(value) != 0) {
+            finger = finger.next();
+            index++;
+        }
+        if (finger != null) return index;
+        else return -1;
     }
-
-    @Override
-    public E get(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public void add(int index, E value) {
-        if (index < 0 || index > count) {
-            return;
-        }
+        if (index < 0 || index > count) return;
         Node<E> previous = head;
         if (index == 0) {
             head = new Node<>(value, previous);
@@ -54,42 +44,97 @@ public class SinglyLinkedList< E extends Comparable<? super E>> extends Abstract
         }
         count++;
     }
-
+    
     @Override
     public E remove(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (index < 0 || index >= count) return null;
+        E value;
+        if (index == 0) {
+            value = head.value();
+            head = head.next();
+        } else {
+            Node<E> previous = head;
+            Node<E> finger = head.next();
+            while (index > 1) {
+                previous = finger;
+                finger = finger.next();
+                index--;
+            }
+            value = finger.value();
+            previous.setNext(finger.next());
+        }
+        count--;
+        return value;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        count = 0;
+    }
+
+    @Override
+    public E get(int index) {
+        if (index < 0 || index >= count) return null;
+        E value;
+        if (index == 0) {
+            value = head.value();
+        } else {
+            Node<E> finger = head.next();
+            while (index > 1) {
+                finger = finger.next();
+                index--;
+            }
+            value = finger.value();
+        }
+        return value;
     }
 
     @Override
     public E set(int index, E value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (index < 0 || index >= count) return null;
+        E otherValue;
+        if (index == 0) {
+            otherValue = head.value();
+            head.setValue(value);
+        } else {
+            Node<E> finger = head.next();
+            while (index > 1) {
+                finger = finger.next();
+                index--;
+            }
+            otherValue = finger.value();
+            finger.setValue(value);
+        }
+        return otherValue;
     }
-
+    
     private class Node<E> {
-
+        
         private E value;
         private Node<E> next;
-
+        
         public Node(E value, Node<E> next) {
             this.value = value;
             this.next = next;
         }
-
+        
         public Node<E> next() {
-            return next();
+            return next;
         }
-
+        
         public E value() {
             return value;
         }
-
+        
         public void setNext(Node<E> next) {
             this.next = next;
         }
-
+        
         public void setValue(E value) {
             this.value = value;
         }
+        
     }
-
+    
 }
